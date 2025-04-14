@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 public class SpawnCars : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -15,6 +16,15 @@ public class SpawnCars : MonoBehaviour
     public void SpawnPlayerCars()
     {
         StopAllCoroutines();
+        player1.StopAllCoroutines();
+        player2.StopAllCoroutines();
+
+        for (int i = InputHandler.Instance.mCoroutines.Count - 1; i >= 0; i--)
+        {
+            Coroutine coroutine = InputHandler.Instance.mCoroutines[i];
+            InputHandler.Instance.StopCoroutine(coroutine);
+            InputHandler.Instance.mCoroutines.Remove(coroutine);
+        }
 
         List<Transform> spawnLocations2 = new List<Transform>();
         for (int i = 0; i < spawnLocations.Count; i++)

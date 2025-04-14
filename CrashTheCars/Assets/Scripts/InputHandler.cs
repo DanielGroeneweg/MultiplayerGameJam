@@ -4,8 +4,10 @@ using UnityEngine.Events;
 using Unity.VisualScripting;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 public class InputHandler : MonoBehaviour
 {
+    public List<Coroutine> mCoroutines = new List<Coroutine>();
     public UnityEvent FailureEvent;
     [DoNotSerialize] public bool didSuccessOrFailure = false;
 
@@ -123,35 +125,49 @@ public class InputHandler : MonoBehaviour
             playersCanGiveInput = false;
         }
     }
+    bool resettedPlayer = false;
     public void ResetPlayers()
     {
-        if (playersCanGiveInput) return;
+        if (!resettedPlayer)
+        {
 
-        player1Finger.texture = stop;
-        player1Finger.transform.localEulerAngles = Vector3.zero;
+            player1Finger.texture = stop;
+            player1Finger.transform.localEulerAngles = Vector3.zero;
 
-        player2Finger.texture = stop;
-        player2Finger.transform.localEulerAngles = Vector3.zero;
+            player2Finger.texture = stop;
+            player2Finger.transform.localEulerAngles = Vector3.zero;
 
-        playersCanGiveInput = true;
+            resettedPlayer = true;
+            playersCanGiveInput = true;
+            StartCoroutine(SuccessOrFailure());
+
+            Coroutine coroutine = StartCoroutine(InputTimer());
+            mCoroutines.Add(coroutine);
+        }
+    }
+    private IEnumerator SuccessOrFailure()
+    {
+        yield return new WaitForEndOfFrame();
         didSuccessOrFailure = false;
-
-        StartCoroutine(InputTimer());
+        resettedPlayer = false;
     }
     public IEnumerator InputTimer()
     {
+        Debug.Log("Started Timer");
         float timer = time;
         timerText.text = timer.ToString();
         yield return null;
+
         while (timer > 0)
         {
             timer -= Time.deltaTime;
-            timerText.text = timer.ToString();
+            timerText.text = (Mathf.Floor(timer * 100f) / 100f).ToString();
             yield return null;
         }
 
         if (!player1GaveInput && !player2GaveInput)
         {
+            Debug.Log("failed by time");
             FailureEvent?.Invoke();
         }
     }
@@ -165,7 +181,7 @@ public class InputHandler : MonoBehaviour
     public void Success()
     {
         streak++;
-        score += (int)(Mathf.Floor(scoreIncrease * (1 + streakScoremultiplier * streak) * 100f) / 100f);
+        score += (int)(scoreIncrease * (1 + streakScoremultiplier * (streak - 1)));
         time -= timeDecrease;
         if (time < timeMin) time = timeMin;
         didSuccessOrFailure = true;

@@ -1309,18 +1309,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 669779846}
-        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: ResetPlayers
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   didSuccessOrFailure: 0
   player1Finger: {fileID: 1089365470}
   player2Finger: {fileID: 1174339052}
@@ -1363,8 +1351,8 @@ MonoBehaviour:
   score: 0
   timeMin: 2
   scoreIncrease: 100
-  streakScoremultiplier: 1.1
-  timeDecrease: 0.1
+  streakScoremultiplier: 0.1
+  timeDecrease: 0.5
 --- !u!1 &725117703 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4875852614865973437, guid: e3dc57b64a17f0944a2412d74400e996, type: 3}
@@ -3234,11 +3222,11 @@ PrefabInstance:
       objectReference: {fileID: 243291211}
     - target: {fileID: 8186017453864821625, guid: 9e0d24cc0df39c04c83dc22758116d82, type: 3}
       propertyPath: Failure.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8186017453864821625, guid: 9e0d24cc0df39c04c83dc22758116d82, type: 3}
       propertyPath: Success.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8186017453864821625, guid: 9e0d24cc0df39c04c83dc22758116d82, type: 3}
       propertyPath: Failure.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -3524,11 +3512,11 @@ PrefabInstance:
       objectReference: {fileID: 243291211}
     - target: {fileID: 6299751589585494087, guid: e3dc57b64a17f0944a2412d74400e996, type: 3}
       propertyPath: Failure.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6299751589585494087, guid: e3dc57b64a17f0944a2412d74400e996, type: 3}
       propertyPath: Success.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6299751589585494087, guid: e3dc57b64a17f0944a2412d74400e996, type: 3}
       propertyPath: Failure.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
