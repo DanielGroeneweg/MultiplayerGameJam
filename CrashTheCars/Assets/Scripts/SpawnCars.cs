@@ -8,10 +8,6 @@ public class SpawnCars : MonoBehaviour
 
     [Header("SpawnLocations")]
     [SerializeField] private List<Transform> spawnLocations = new List<Transform>();
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space)) SpawnPlayerCars();
-    }
     private void Start()
     {
         SpawnPlayerCars();
@@ -81,8 +77,5 @@ public class SpawnCars : MonoBehaviour
         }
         StartCoroutine(player2.DriveToStopLocation());
         spawnLocations2.RemoveAt(rand);
-
-        Debug.Log("1 " + player1.spawnLocation);
-        Debug.Log("2 " + player2.spawnLocation);
     }
 }

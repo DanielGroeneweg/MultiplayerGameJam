@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 public class CarMovement : MonoBehaviour
 {
+    public UnityEvent Failure;
+    public UnityEvent Success;
+
     [Header("Car Stats")]
     [SerializeField] private float speed = 5;
     [SerializeField] private float rotationSpeed = 0.01f;
@@ -56,6 +60,13 @@ public class CarMovement : MonoBehaviour
 
             yield return null;
         }
+
+        if (!InputHandler.Instance.didSuccessOrFailure) Failure?.Invoke();
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("collision");
+        if (other.tag == gameObject.tag && !InputHandler.Instance.didSuccessOrFailure) Success?.Invoke();
     }
     public IEnumerator DriveToStopLocation()
     {
@@ -81,8 +92,9 @@ public class CarMovement : MonoBehaviour
                     if (Vector3.Distance(transform.position, stopLocations[3].position) <= 0.5f) reachedLocation = true;
                     break;
             }
-
             yield return null;
         }
+        
+        InputHandler.Instance.ResetPlayers();
     }
 }

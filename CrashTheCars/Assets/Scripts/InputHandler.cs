@@ -2,8 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Unity.VisualScripting;
+using System.Collections;
+using TMPro;
 public class InputHandler : MonoBehaviour
 {
+    public UnityEvent FailureEvent;
+    [DoNotSerialize] public bool didSuccessOrFailure = false;
+
     [Header("references")]
     [SerializeField] private RawImage player1Finger;
     [SerializeField] private RawImage player2Finger;
@@ -12,17 +17,33 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private Texture stop;
     [SerializeField] private Texture redFinger;
     [SerializeField] private Texture blueFinger;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text timerText;
 
     public UnityEvent PlayersGaveInput;
 
     private bool player1GaveInput = false;
     private bool player2GaveInput = false;
     
-    private bool playersCanGiveInput = true;
+    private bool playersCanGiveInput = false;
+
+    [DoNotSerialize] public static InputHandler Instance;
+
+    [Header("Stats")]
+    [SerializeField] private float time = 10;
+    [SerializeField] private int streak = 0;
+    [SerializeField] private int score = 0;
+    [SerializeField] private float timeMin = 2;
+    [SerializeField] private int scoreIncrease = 100;
+    [SerializeField] private float streakScoremultiplier = 0.1f;
+    [SerializeField] private float timeDecrease = 0.1f;
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) ResetPlayers();
-
         if (!playersCanGiveInput) return;
 
         #region Player1
@@ -95,18 +116,58 @@ public class InputHandler : MonoBehaviour
 
         if (player1GaveInput && player2GaveInput)
         {
+            StopCoroutine(InputTimer());
             PlayersGaveInput?.Invoke();
             player1GaveInput = false;
             player2GaveInput = false;
-            //playersCanGiveInput = false;
+            playersCanGiveInput = false;
         }
     }
     public void ResetPlayers()
     {
+        if (playersCanGiveInput) return;
+
         player1Finger.texture = stop;
         player1Finger.transform.localEulerAngles = Vector3.zero;
 
         player2Finger.texture = stop;
-        player1Finger.transform.localEulerAngles = Vector3.zero;
+        player2Finger.transform.localEulerAngles = Vector3.zero;
+
+        playersCanGiveInput = true;
+        didSuccessOrFailure = false;
+
+        StartCoroutine(InputTimer());
+    }
+    public IEnumerator InputTimer()
+    {
+        float timer = time;
+        timerText.text = timer.ToString();
+        yield return null;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            timerText.text = timer.ToString();
+            yield return null;
+        }
+
+        if (!player1GaveInput && !player2GaveInput)
+        {
+            FailureEvent?.Invoke();
+        }
+    }
+    public void Failure()
+    {
+        score -= scoreIncrease;
+        scoreText.text = score.ToString();
+        streak = 0;
+        didSuccessOrFailure = true;
+    }
+    public void Success()
+    {
+        streak++;
+        score += (int)(Mathf.Floor(scoreIncrease * (1 + streakScoremultiplier * streak) * 100f) / 100f);
+        time -= timeDecrease;
+        if (time < timeMin) time = timeMin;
+        didSuccessOrFailure = true;
     }
 }
