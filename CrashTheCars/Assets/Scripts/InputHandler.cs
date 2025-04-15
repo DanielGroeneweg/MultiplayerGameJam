@@ -118,7 +118,12 @@ public class InputHandler : MonoBehaviour
 
         if (player1GaveInput && player2GaveInput)
         {
-            StopCoroutine(InputTimer());
+            for (int i = mCoroutines.Count - 1; i >= 0; i--)
+            {
+                Coroutine coroutine = mCoroutines[i];
+                StopCoroutine(coroutine);
+                mCoroutines.Remove(coroutine);
+            }
             PlayersGaveInput?.Invoke();
             player1GaveInput = false;
             player2GaveInput = false;
@@ -180,8 +185,10 @@ public class InputHandler : MonoBehaviour
     }
     public void Success()
     {
+        Debug.Log("Scored");
         streak++;
         score += (int)(scoreIncrease * (1 + streakScoremultiplier * (streak - 1)));
+        scoreText.text = score.ToString();
         time -= timeDecrease;
         if (time < timeMin) time = timeMin;
         didSuccessOrFailure = true;
